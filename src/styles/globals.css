@@ -1,0 +1,43 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#__next {
+  height: 100%;
+}
+
+.css-tdnrhj tr:nth-of-type(odd) td {
+  background: #71809647!important;
+}
+
+.container {
+  height: 100%;
+}
+
+.chakra-modal__content-container {
+  padding: 12px;
+}
+
+table th {
+  border: none!important;
+}
+
+@media screen and (max-width: 480px) {
+  .container {
+    height: auto;
+  }
+}

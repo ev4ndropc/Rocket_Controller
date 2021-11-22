@@ -1,0 +1,29 @@
+{
+  "name": "rocket-controler",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^1.7.2",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "bcrypt": "^5.0.1",
+    "framer-motion": "^4",
+    "knex": "^0.95.14",
+    "moment": "^2.29.1",
+    "mysql2": "^2.3.3",
+    "next": "12.0.4",
+    "next-auth": "^3.29.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-icons": "^4.3.1"
+  },
+  "devDependencies": {
+    "eslint": "7.32.0",
+    "eslint-config-next": "12.0.4"
+  }
+}
