@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/client"
 import database from '../../../../database';
 
-export default async function listClients(request, response) {
+export default async function deleteClient(request, response) {
     const { id } = request.query;
     const session = await getSession({ req: request });
     if (!session)

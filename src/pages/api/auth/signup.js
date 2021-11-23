@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import database from '../../database';
+import database from '../../../database';
 
 export default function handler(request, response) {
     const { email, password } = request.body;
@@ -25,5 +25,4 @@ export default function handler(request, response) {
         });
     });
 
-  }
-  
+}

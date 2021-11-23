@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
-import { useSession, getSession } from "next-auth/client"
+import { useSession, getSession, signOut } from "next-auth/client"
 import moment from 'moment'
 import 'moment/locale/pt-br'
 import {
@@ -36,6 +36,8 @@ import {
 
 import { AiOutlineUserAdd, AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
 import { IoMdArrowDropup, IoMdArrowDropdown } from 'react-icons/io'
+import { MdLogout } from 'react-icons/md'
+import { BiSearchAlt } from 'react-icons/bi'
 
 export default function Page(props) {
   const toast = useToast()
@@ -52,6 +54,15 @@ export default function Page(props) {
   const [clientSpotifyLink, setClientSpotifyLink] = useState('')
   const [expireAt, setExpireAt] = useState(moment().format('YYYY-MM-DDTHH:mm:ss'))
 
+  const [searchFor, setSearchFor] = useState('')
+  const [searchWhere, setSearchWhere] = useState('')
+
+  const setListBy = async (orderBy) => {
+    const res = await fetch('/api/clients/list?orderBy=' + orderBy)
+    const data = await res.json()
+    setClients(data.clients)
+  }
+
   const handleAddNewCLient = () => {
     setModalType('add')
     setExpireAt(moment().format('YYYY-MM-DDTHH:mm:ss'))
@@ -60,6 +71,12 @@ export default function Page(props) {
 
   const handleEditClient = (client) => {
     setModalType('edit')
+    setClientId(client)
+    const client_data = clients.filter(item => item.id === client)
+    setClientName(client_data[0].name)
+    setClientContact(client_data[0].contact)
+    setClientSpotifyLink(client_data[0].spotify_link)
+    setExpireAt(client_data[0].expire_at)
     setIsOpen(true)
   }
 
@@ -113,7 +130,46 @@ export default function Page(props) {
   }
 
   const handleConfirmEditClient = async () => {
+    if (!clientName || !clientContact || !expireAt) {
+      return toast({
+        title: 'Preencha todos os campos',
+        status: 'error',
+        duration: 2000,
+        isClosable: true
+      })
+    }
 
+    const data = {
+      id: clientId,
+      name: clientName,
+      contact: clientContact,
+      spotify_link: clientSpotifyLink,
+      expire_at: expireAt
+    }
+
+    const response = await fetch('/api/clients/edit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+
+    const json = await response.json()
+    if (json.success) {
+      setClients(json.clients)
+      onClose()
+      setClientName('')
+      setClientContact('')
+      setClientSpotifyLink('')
+      setExpireAt('')
+      return toast({
+        title: 'Cliente editado com sucesso',
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+    }
   }
 
   const handleConfirDelete = async () => {
@@ -141,6 +197,28 @@ export default function Page(props) {
     }
   }
 
+  const handleSearchFor = async () => {
+    if (!searchFor || !searchWhere) {
+      const res = await fetch('/api/clients/list')
+      const data = await res.json()
+      return setClients(data.clients)
+    }
+
+    const res = await fetch(`/api/clients/search?value=${searchFor}&where=${searchWhere}`)
+    const data = await res.json()
+
+    if (data.message) {
+      return toast({
+        title: 'Digite o que quer procurar e selecione em qual campo!',
+        status: 'error',
+        duration: 2000,
+        isClosable: true
+      })
+    }
+
+    return setClients(data.clients)
+  }
+
   useEffect(() => {
     const getClients = async () => {
       const res = await fetch('/api/clients/list')
@@ -156,28 +234,38 @@ export default function Page(props) {
       <Head>
         <title>Lista de clientes</title>
       </Head>
-      <Flex className="container" w="100%" p="12px 24px" bgColor="gray.300" justifyContent="center" alignItems="flex-start">
+      <Flex className="container" w="100%" p="12px 24px" bgColor="gray.300" justifyContent="center" alignItems="center">
         <Flex w="100%" maxW="1080px" p="1rem" borderRadius="md" boxShadow="md" bgColor="white" justifyContent="flex-start" alignItems="center" flexDir="column">
           <Flex w="100%" maxW="976px" direction="column" alignItems="center" mt="2rem">
             <Heading>Lista de clientes</Heading>
           </Flex>
           <Flex w="100%" maxW="976px" direction="column" alignItems="center" mt="2rem">
-            <Flex w="100%" justifyContent="flex-start">
+            <Flex w="100%" justifyContent="space-between">
               <Button colorScheme="green" leftIcon={<AiOutlineUserAdd />} onClick={handleAddNewCLient}>Adicionar novo cliente</Button>
+              <Button onClick={() => signOut()} colorScheme="red"><MdLogout size="20px" /></Button>
             </Flex>
-            <Flex w="100%" justifyContent="flex-start" mt="2rem">
-              <FormControl id="search">
-                <FormLabel htmlFor="search">Pesquisar</FormLabel>
-                <Input type="text" id="search" placeholder="Pesquisar cliente" />
-              </FormControl>
-              <FormControl id="search_type" ml="1rem">
-                <FormLabel htmlFor="search_type">Pesquisar em</FormLabel>
-                <Select id="search_type" placeholder="Pesquisar em">
-                  <option>Nome</option>
-                  <option>Contato</option>
-                  <option>Link do Spotify</option>
-                </Select>
-              </FormControl>
+            <Flex w="100%" justifyContent="space-around" mt="2rem">
+              <Flex w="100%">
+                <FormControl id="search">
+                  <FormLabel htmlFor="search">Pesquisar por</FormLabel>
+                  <Input type="text" id="search" value={searchFor} onChange={(e) => setSearchFor(e.target.value)} placeholder="Pesquisar cliente" />
+                </FormControl>
+              </Flex>
+              <Flex w="100%">
+                <FormControl id="search_type" ml="1rem">
+                  <FormLabel htmlFor="search_type">Pesquisar em</FormLabel>
+                  <Select id="search_type" value={searchWhere} onChange={(e) => setSearchWhere(e.target.value)} placeholder="Pesquisar em">
+                    <option value="name">Nome</option>
+                    <option value="contact">Contato</option>
+                    <option value="spotify_link">Link do Spotify</option>
+                  </Select>
+                </FormControl>
+              </Flex>
+              <Flex>
+                <FormControl display="flex" justifyContent="flex-end" alignItems="flex-end" id="search" ml="1rem">
+                  <Button colorScheme="green" onClick={handleSearchFor} leftIcon={<BiSearchAlt />}>Procurar</Button>
+                </FormControl>
+              </Flex>
             </Flex>
             <Flex w="100%" overflow="scroll">
               <Table variant="striped" m="1rem 0" boxShadow="md">
@@ -190,10 +278,10 @@ export default function Page(props) {
                       <Flex>Expira em</Flex>
                       <Flex flexDir="column" ml="0.5rem">
                         <Flex mb="-3px" cursor="pointer">
-                          <IoMdArrowDropup size="18px" />
+                          <IoMdArrowDropup onClick={() => setListBy('asc')} size="18px" />
                         </Flex>
                         <Flex mt="-3px" cursor="pointer">
-                          <IoMdArrowDropdown size="18px" />
+                          <IoMdArrowDropdown onClick={() => setListBy('desc')} size="18px" />
                         </Flex>
                       </Flex>
                     </Th>
@@ -254,7 +342,7 @@ export default function Page(props) {
           <ModalCloseButton />
           <ModalBody>
             <Flex w="100%" direction="column" alignItems="center" mt="1rem">
-              {modalType == 'add' &&
+              {modalType == 'add' || modalType == 'edit' &&
                 <chakra.form w="100%" method="post">
                   <FormControl>
                     <FormLabel>Nome</FormLabel>

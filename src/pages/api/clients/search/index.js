@@ -1,26 +1,17 @@
 import { getSession } from "next-auth/client"
 import database from '../../../../database';
 
-export default async function editClient(request, response) {
-    const { id, name, contact, expire_at } = request.body;
-
+export default async function search(request, response) {
+    const { value, where } = request.query;
     const session = await getSession({ req: request });
     if (!session)
         return response.status(401).json({ message: 'Unauthorized' });
 
-    if (!id || !name || !contact || !expire_at)
+    if (!value || !where)
         return response.status(400).json({ message: 'Bad Request' });
 
-
     try {
-        const update = await database.update({
-            name: name,
-            contact: contact,
-            expire_at: expire_at
-        }).table('clients').where({ id: id });
-
-        const clients = await database.select().table('clients');
-
+        const clients = await database('clients').where(`${where}`, 'like', `%${value}%`);
         response.status(200).json({ success: true, clients });
     } catch (error) {
         response.status(500).json({ error: error.message });
