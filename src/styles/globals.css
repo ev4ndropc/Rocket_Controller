@@ -36,8 +36,44 @@ table th {
   border: none!important;
 }
 
+
 @media screen and (max-width: 480px) {
-  .container {
-    height: auto;
+  .searchContainer {
+    flex-direction: column;
+  }
+
+  .searchContainer div.css-hboir5:nth-child(2),
+  .searchContainer div.css-k008qs {
+    margin-top: 12px;
+  }
+
+  .searchContainer div[role="group"] {
+    margin-left: 0!important;
+  }
+
+  .searchContainer div.css-k008qs div {
+    justify-content: flex-start;
+  }
+
+  .searchContainer div.css-k008qs div button {
+    width: 100%;
+  }
+
+}
+
+@media screen and (max-width: 440px) {
+  .css-wz4zgn {
+    margin-top: 0!important;
+    margin-bottom: 1rem;
+  }
+
+  .container.css-1bwv2xz {
+    padding-top: 120px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .container.css-1bwv2xz {
+    padding-top: 240px;
   }
 }

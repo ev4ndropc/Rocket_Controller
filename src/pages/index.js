@@ -65,6 +65,9 @@ export default function Page(props) {
 
   const handleAddNewCLient = () => {
     setModalType('add')
+    setClientName('')
+    setClientContact('')
+    setClientSpotifyLink('')
     setExpireAt(moment().format('YYYY-MM-DDTHH:mm:ss'))
     setIsOpen(true)
   }
@@ -234,7 +237,7 @@ export default function Page(props) {
       <Head>
         <title>Lista de clientes</title>
       </Head>
-      <Flex className="container" w="100%" p="12px 24px" bgColor="gray.300" justifyContent="center" alignItems="center">
+      <Flex className="container" w="100%" h="100%" overflowY="scroll" p="24px" bgColor="gray.300" justifyContent="center" alignItems="center">
         <Flex w="100%" maxW="1080px" p="1rem" borderRadius="md" boxShadow="md" bgColor="white" justifyContent="flex-start" alignItems="center" flexDir="column">
           <Flex w="100%" maxW="976px" direction="column" alignItems="center" mt="2rem">
             <Heading>Lista de clientes</Heading>
@@ -244,7 +247,7 @@ export default function Page(props) {
               <Button colorScheme="green" leftIcon={<AiOutlineUserAdd />} onClick={handleAddNewCLient}>Adicionar novo cliente</Button>
               <Button onClick={() => signOut()} colorScheme="red"><MdLogout size="20px" /></Button>
             </Flex>
-            <Flex w="100%" justifyContent="space-around" mt="2rem">
+            <Flex w="100%" justifyContent="space-around" mt="2rem" className="searchContainer">
               <Flex w="100%">
                 <FormControl id="search">
                   <FormLabel htmlFor="search">Pesquisar por</FormLabel>
@@ -342,26 +345,25 @@ export default function Page(props) {
           <ModalCloseButton />
           <ModalBody>
             <Flex w="100%" direction="column" alignItems="center" mt="1rem">
-              {modalType == 'add' || modalType == 'edit' &&
-                <chakra.form w="100%" method="post">
-                  <FormControl>
-                    <FormLabel>Nome</FormLabel>
-                    <Input value={clientName} onChange={(e) => setClientName(e.target.value)} name="name" type="text" placeholder="Nome do cliente" />
-                  </FormControl>
-                  <FormControl mt="0.5rem">
-                    <FormLabel>contato</FormLabel>
-                    <Input value={clientContact} onChange={(e) => setClientContact(e.target.value)} name="contact" type="text" placeholder="Contato" />
-                  </FormControl>
-                  <FormControl mt="0.5rem">
-                    <FormLabel>Link do Spotify</FormLabel>
-                    <Input value={clientSpotifyLink} onChange={(e) => setClientSpotifyLink(e.target.value)} name="spotify_link" type="text" placeholder="Link do Spotify" />
-                  </FormControl>
-                  <FormControl mt="1rem">
-                    <FormLabel>Data de expiração</FormLabel>
-                    <Input value={expireAt} onChange={(e) => setExpireAt(e.target.value)} type="datetime-local" />
-                  </FormControl>
-                </chakra.form>
-              }
+              <chakra.form w="100%" method="post">
+                <FormControl>
+                  <FormLabel>Nome</FormLabel>
+                  <Input value={clientName} onChange={(e) => setClientName(e.target.value)} name="name" type="text" placeholder="Nome do cliente" />
+                </FormControl>
+                <FormControl mt="0.5rem">
+                  <FormLabel>contato</FormLabel>
+                  <Input value={clientContact} onChange={(e) => setClientContact(e.target.value)} name="contact" type="text" placeholder="Contato" />
+                </FormControl>
+                <FormControl mt="0.5rem">
+                  <FormLabel>Link do Spotify</FormLabel>
+                  <Input value={clientSpotifyLink} onChange={(e) => setClientSpotifyLink(e.target.value)} name="spotify_link" type="text" placeholder="Link do Spotify" />
+                </FormControl>
+                <FormControl mt="1rem">
+                  <FormLabel>Data de expiração</FormLabel>
+                  <Input value={expireAt} onChange={(e) => setExpireAt(e.target.value)} type="datetime-local" />
+                </FormControl>
+              </chakra.form>
+
             </Flex>
           </ModalBody>
 
