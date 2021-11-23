@@ -32,7 +32,8 @@ import {
   Text,
   Select,
   chakra,
-  useToast
+  useToast,
+  Tooltip
 } from '@chakra-ui/react'
 
 import { AiOutlineUserAdd, AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
@@ -203,10 +204,24 @@ export default function Page(props) {
   }
 
   const handleSearchFor = async () => {
-    if (!searchFor || !searchWhere) {
+    if (!searchFor && !searchWhere) {
       const res = await fetch('/api/clients/list')
       const data = await res.json()
       return setClients(data.clients)
+    } else if (!searchWhere) {
+      return toast({
+        title: 'Preencha o campo de "Pesquisar em"',
+        status: 'error',
+        duration: 2000,
+        isClosable: true
+      })
+    } else if (!searchFor) {
+      return toast({
+        title: 'Preencha o campo de "Pesquisar por"',
+        status: 'error',
+        duration: 2000,
+        isClosable: true
+      })
     }
 
     const res = await fetch(`/api/clients/search?value=${searchFor}&where=${searchWhere}`)
@@ -286,12 +301,16 @@ export default function Page(props) {
                     <Th color="white" display="flex" justifyContent="flex-start" alignItems="center" flexDir="row">
                       <Flex>Expira em</Flex>
                       <Flex flexDir="column" ml="0.5rem">
-                        <Flex mb="-3px" cursor="pointer">
-                          <IoMdArrowDropup onClick={() => setListBy('asc')} size="18px" />
-                        </Flex>
-                        <Flex mt="-3px" cursor="pointer">
-                          <IoMdArrowDropdown onClick={() => setListBy('desc')} size="18px" />
-                        </Flex>
+                        <Tooltip placement="end" label="Ordernar por data de expiração mais próxima">
+                          <Flex mb="-3px" cursor="pointer">
+                            <IoMdArrowDropup onClick={() => setListBy('asc')} size="18px" />
+                          </Flex>
+                        </Tooltip>
+                        <Tooltip placement="end" label="Ordernar por data de expiração mais longe">
+                          <Flex mt="-3px" cursor="pointer">
+                            <IoMdArrowDropdown onClick={() => setListBy('desc')} size="18px" />
+                          </Flex>
+                        </Tooltip>
                       </Flex>
                     </Th>
                     <Th color="white">Ações</Th>
