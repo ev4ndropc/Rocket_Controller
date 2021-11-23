@@ -29,6 +29,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Text,
   Select,
   chakra,
   useToast
@@ -38,6 +39,7 @@ import { AiOutlineUserAdd, AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai
 import { IoMdArrowDropup, IoMdArrowDropdown } from 'react-icons/io'
 import { MdLogout } from 'react-icons/md'
 import { BiSearchAlt } from 'react-icons/bi'
+import { FaUsers } from 'react-icons/fa'
 
 export default function Page(props) {
   const toast = useToast()
@@ -270,8 +272,12 @@ export default function Page(props) {
                 </FormControl>
               </Flex>
             </Flex>
-            <Flex w="100%" overflow="scroll">
-              <Table variant="striped" m="1rem 0" boxShadow="md">
+            <Flex w="100%" overflow="scroll" flexDir="column">
+              <Flex w="100%" mt="1rem" mb="0.3rem" alignItems="center" flexDir="row">
+                <FaUsers />
+                <Text ml="0.3rem">Total de clientes: <chakra.strong ml="0.3rem">{clients.length}</chakra.strong></Text>
+              </Flex>
+              <Table variant="striped" m="0 0 1rem" boxShadow="md">
                 <Thead bgColor="gray.500">
                   <Tr>
                     <Th color="white">Nome</Th>
