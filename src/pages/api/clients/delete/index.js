@@ -10,9 +10,9 @@ export default async function deleteClient(request, response) {
     try {
         await database.delete().from('clients').where('id', id);
         const clients = await database.select().from('clients');
-        response.status(200).json({ success: true, clients });
+        return response.status(200).json({ success: true, clients });
     } catch (error) {
-        response.status(500).json({ error: error.message });
+        return response.status(500).json({ error: error.message });
     }
 
 }

@@ -12,9 +12,9 @@ export default async function search(request, response) {
 
     try {
         const clients = await database('clients').where(`${where}`, 'like', `%${value}%`);
-        response.status(200).json({ success: true, clients });
+        return response.status(200).json({ success: true, clients });
     } catch (error) {
-        response.status(500).json({ error: error.message });
+        return response.status(500).json({ error: error.message });
     }
 
 }

@@ -15,9 +15,9 @@ export default async function addClient(request, response) {
     try {
         await database('clients').insert({ name, contact, spotify_link, expire_at });
         const clients = await database('clients').select();
-        response.status(201).json({ success: true, clients });
+        return response.status(201).json({ success: true, clients });
     } catch (error) {
-        response.status(500).json({ error: error.message });
+        return response.status(500).json({ error: error.message });
     }
 
 }

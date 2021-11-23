@@ -9,9 +9,9 @@ export default async function listClients(request, response) {
 
   try {
     const clients = await database('clients').orderBy('expire_at', orderBy ? orderBy : 'asc');
-    response.status(200).json({ success: true, clients });
+    return response.status(200).json({ success: true, clients });
   } catch (error) {
-    response.status(500).json({ error: error.message });
+    return response.status(500).json({ error: error.message });
   }
 
 }
