@@ -33,19 +33,30 @@ import {
   Select,
   chakra,
   useToast,
-  Tooltip
+  Tooltip,
+  Avatar,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from '@chakra-ui/react'
 
 import { AiOutlineUserAdd, AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
 import { IoMdArrowDropup, IoMdArrowDropdown } from 'react-icons/io'
-import { MdLogout } from 'react-icons/md'
-import { BiSearchAlt } from 'react-icons/bi'
+import { MdLogout, MdOutlineAccountCircle } from 'react-icons/md'
+import { BiSearchAlt, BiCog } from 'react-icons/bi'
 import { FaUsers } from 'react-icons/fa'
+import { IoCashOutline } from 'react-icons/io5'
+import { BsCheckCircle } from 'react-icons/bs'
 
 export default function Page(props) {
   const toast = useToast()
   const [isOpen, setIsOpen] = useState(false)
   const onClose = () => setIsOpen(false)
+
+  const [email, setEmail] = useState(props.session.user.email)
+  const [password, setPassword] = useState('')
+  const [repeatPassword, setRepeatPassword] = useState('')
 
   const [clients, setClients] = useState([])
   const [clientId, setClientId] = useState(null)
@@ -55,7 +66,7 @@ export default function Page(props) {
   const [clientName, setClientName] = useState('')
   const [clientContact, setClientContact] = useState('')
   const [clientSpotifyLink, setClientSpotifyLink] = useState('')
-  const [expireAt, setExpireAt] = useState(moment().format('YYYY-MM-DDTHH:mm:ss'))
+  const [expireAt, setExpireAt] = useState(moment().format('yyyy-MM-DD'))
 
   const [searchFor, setSearchFor] = useState('')
   const [searchWhere, setSearchWhere] = useState('')
@@ -71,7 +82,7 @@ export default function Page(props) {
     setClientName('')
     setClientContact('')
     setClientSpotifyLink('')
-    setExpireAt(moment().format('YYYY-MM-DDTHH:mm:ss'))
+    setExpireAt(moment().format('yyyy-MM-DD'))
     setIsOpen(true)
   }
 
@@ -239,6 +250,146 @@ export default function Page(props) {
     return setClients(data.clients)
   }
 
+  const setAsPaid = async (client) => {
+    const res = await fetch(`/api/clients/paid?id=${client}`)
+    const data = await res.json()
+    if (data.success) {
+      setClients(data.clients)
+      return toast({
+        title: 'Cliente marcado como pago',
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+    }
+  }
+
+  const handleChangeMyInformation = () => {
+    setModalType('edit_my_information')
+    setIsOpen(true)
+
+    setEmail(props.session.user.email)
+    setPassword('')
+    setRepeatPassword('')
+
+  }
+
+  const handleEditMyInformation = async () => {
+    if (!email || !password || !repeatPassword || password.trim() == '' || repeatPassword.trim() == '') {
+      return toast({
+        title: 'Preencha todos os campos',
+        status: 'error',
+        duration: 2000,
+        isClosable: true
+      })
+    }
+    if (password !== repeatPassword) {
+      return toast({
+        title: 'As senhas não são iguais',
+        status: 'error',
+        duration: 2000,
+        isClosable: true
+      })
+    }
+
+    const data = {
+      email: email,
+      password: password
+    }
+
+    const response = await fetch('/api/auth/edit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+
+    const json = await response.json()
+
+    if (json.success) {
+      setIsOpen(false)
+      return toast({
+        title: 'Dados editados com sucesso',
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+    } else {
+      return toast({
+        title: 'Erro ao editar dados',
+        status: 'error',
+        duration: 2000,
+        isClosable: true
+      })
+    }
+  }
+
+
+  const handleCreateNewAdminAccount = () => {
+    setModalType('create_new_admin_account')
+    setIsOpen(true)
+
+    setEmail('')
+    setPassword('')
+    setRepeatPassword('')
+  }
+
+  const handleConfirmCreateNewAdminAccount = async () => {
+    if (!email || !password || !repeatPassword || password.trim() == '' || repeatPassword.trim() == '') {
+      return toast({
+        title: 'Preencha todos os campos',
+        status: 'error',
+        duration: 2000,
+        isClosable: true
+      })
+    }
+    if (password !== repeatPassword) {
+      return toast({
+        title: 'As senhas não são iguais',
+        status: 'error',
+        duration: 2000,
+        isClosable: true
+      })
+    }
+
+    const data = {
+      email: email,
+      password: password
+    }
+
+    const response = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+
+    const json = await response.json()
+
+    if (json.success) {
+      setIsOpen(false)
+      return toast({
+        title: 'Conta criada com sucesso',
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+    } else {
+      return toast({
+        title: 'Erro ao criar conta de administrador',
+        status: 'error',
+        duration: 2000,
+        isClosable: true
+      })
+    }
+  }
+
+
+
+
+
   useEffect(() => {
     const getClients = async () => {
       const res = await fetch('/api/clients/list')
@@ -249,20 +400,40 @@ export default function Page(props) {
     getClients().then(data => setClients(data))
 
   }, [])
+
   return (
     <>
       <Head>
         <title>Lista de clientes</title>
       </Head>
       <Flex className="container" w="100%" h="100%" overflowY="scroll" p="24px" bgColor="gray.300" justifyContent="center" alignItems="center">
-        <Flex w="100%" maxW="1080px" p="1rem" borderRadius="md" boxShadow="md" bgColor="white" justifyContent="flex-start" alignItems="center" flexDir="column">
-          <Flex w="100%" maxW="976px" direction="column" alignItems="center" mt="2rem">
+        <Flex w="100%" maxW="1280px" p="1rem" borderRadius="md" boxShadow="md" bgColor="white" justifyContent="flex-start" alignItems="center" flexDir="column">
+          <Flex w="100%" maxW="1200px" direction="column" alignItems="center" mt="2rem">
             <Heading>Lista de clientes</Heading>
           </Flex>
-          <Flex w="100%" maxW="976px" direction="column" alignItems="center" mt="2rem">
-            <Flex w="100%" justifyContent="space-between">
-              <Button colorScheme="green" leftIcon={<AiOutlineUserAdd />} onClick={handleAddNewCLient}>Adicionar novo cliente</Button>
-              <Button onClick={() => signOut()} colorScheme="red"><MdLogout size="20px" /></Button>
+          <Flex w="100%" maxW="1200px" direction="column" alignItems="center" mt="2rem">
+            <Flex w="100%" justifyContent="space-between" className="container-topar">
+              <Flex justifyContent="center" alignItems="center">
+                <Button colorScheme="green" leftIcon={<AiOutlineUserAdd />} onClick={handleAddNewCLient}>Adicionar novo cliente</Button>
+              </Flex>
+              <Flex justifyContent="center" alignItems="center">
+                <Button onClick={() => signOut()} colorScheme="red"><MdLogout size="20px" /></Button>
+
+                <Menu placement="auto-start">
+                  <MenuButton as={Avatar} cursor="pointer" src="/favicon.ico" ml="1rem" size="md" />
+                  <MenuList boxShadow="md">
+                    <MenuItem onClick={handleChangeMyInformation}>
+                      <BiCog />
+                      <Text ml="0.5rem">Mudar meus dados</Text>
+                    </MenuItem>
+                    <MenuItem onClick={handleCreateNewAdminAccount}>
+                      <MdOutlineAccountCircle />
+                      <Text ml="0.5rem">Cria nova conta de administrador</Text>
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+
+              </Flex>
             </Flex>
             <Flex w="100%" justifyContent="space-around" mt="2rem" className="searchContainer">
               <Flex w="100%">
@@ -313,6 +484,7 @@ export default function Page(props) {
                         </Tooltip>
                       </Flex>
                     </Th>
+                    <Th color="white">Marcar como Pago</Th>
                     <Th color="white">Ações</Th>
                   </Tr>
                 </Thead>
@@ -322,7 +494,10 @@ export default function Page(props) {
                       <Td>{client.name}</Td>
                       <Td>{client.contact}</Td>
                       <Td><chakra.a color="blue.300" href={client.spotify_link} target="_blank">{client.spotify_link}</chakra.a></Td>
-                      <Td>{moment(client.expire_at).format('LLL')}</Td>
+                      <Td minW="232px" fontWeight={moment().format('DD-MM-yyyy') > moment(client.expire_at).format('DD-MM-yyyy') ? 'bold' : ''} color={moment().format('DD-MM-yyyy') > moment(client.expire_at).format('DD-MM-yyyy') ? 'red.400' : ''}>{moment(client.expire_at).format('DD-MM-yyyy')}{moment().format('DD-MM-yyyy') > moment(client.expire_at).format('DD-MM-yyyy') ? ' - (Vencido)' : ''}</Td>
+                      <Td>
+                        <Button mr="0.1rem" colorScheme="green" leftIcon={<IoCashOutline />} onClick={() => setAsPaid(client.id)}>Pago</Button>
+                      </Td>
                       <Td minW="260px">
                         <Button mr="0.1rem" colorScheme="blue" leftIcon={<AiOutlineEdit />} onClick={() => handleEditClient(client.id)}>Editar</Button>
                         <Button ml="0.1rem" colorScheme="red" leftIcon={<AiOutlineDelete />} onClick={() => handleDeleteClient(client.id)}>Excluir</Button>
@@ -385,7 +560,7 @@ export default function Page(props) {
                 </FormControl>
                 <FormControl mt="1rem">
                   <FormLabel>Data de expiração</FormLabel>
-                  <Input value={expireAt} onChange={(e) => setExpireAt(e.target.value)} type="datetime-local" />
+                  <Input value={expireAt} onChange={(e) => setExpireAt(e.target.value)} type="date" />
                 </FormControl>
               </chakra.form>
 
@@ -398,10 +573,51 @@ export default function Page(props) {
             </Button>
             <Button
               colorScheme={modalType == 'add' ? 'green' : 'blue'}
-              leftIcon={modalType == 'add' ? <AiOutlineUserAdd /> : <AiOutlineEdit />}
+              leftIcon={modalType == 'add' ? <AiOutlineUserAdd /> : <BsCheckCircle />}
               onClick={modalType == 'add' ? handleConfirmAddNewClient : handleConfirmEditClient}
             >
-              {modalType == 'add' ? 'Adicionar' : 'Editar'}
+              {modalType == 'add' ? 'Adicionar' : 'Salvar'}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isCentered size="lg" isOpen={modalType == 'edit_my_information' ? isOpen : modalType == 'create_new_admin_account' ? isOpen : null} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{modalType == 'edit_my_information' ? 'Mudar minhas informações' : 'Criar nova conta de administrador'}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Flex w="100%" direction="column" alignItems="center" mt="1rem">
+              <chakra.form w="100%" method="post">
+                <FormControl>
+                  <FormLabel>Email</FormLabel>
+                  <Input value={email} onChange={(e) => setEmail(e.target.value)} name="name" type="email" placeholder="Email" />
+                </FormControl>
+
+                <FormControl mt="1rem">
+                  <FormLabel>Senha</FormLabel>
+                  <Input value={password} onChange={(e) => setPassword(e.target.value)} name="name" type="password" placeholder="Senha" />
+                </FormControl>
+
+                <FormControl mt="1rem">
+                  <FormLabel>Repita a senha</FormLabel>
+                  <Input value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} name="name" type="password" placeholder="Repita a senha" />
+                </FormControl>
+              </chakra.form>
+            </Flex>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={onClose}>
+              Fechar
+            </Button>
+            <Button
+              colorScheme="green"
+              leftIcon={modalType == 'edit_my_information' ? <BsCheckCircle /> : <AiOutlineUserAdd />}
+              onClick={modalType == 'edit_my_information' ? handleEditMyInformation : handleConfirmCreateNewAdminAccount}
+            >
+              {modalType == 'edit_my_information' ? 'Salvar' : 'Criar conta'}
             </Button>
           </ModalFooter>
         </ModalContent>

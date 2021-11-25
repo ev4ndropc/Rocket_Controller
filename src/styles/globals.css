@@ -70,10 +70,24 @@ table th {
   .container.css-1bwv2xz {
     padding-top: 120px;
   }
+
+  .container-topar {
+    flex-direction: column-reverse;
+  }
+
+  .container-topar div:nth-child(2) {
+    padding-bottom: 12px;
+  }
 }
 
 @media screen and (max-width: 400px) {
   .container.css-1bwv2xz {
     padding-top: 240px;
+  }
+}
+
+@media screen and (max-width: 321px) {
+  h2 {
+    font-size: 24px!important;
   }
 }

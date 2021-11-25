@@ -18,18 +18,20 @@ export default async function handler(request, response) {
 
     const hash = bcrypt.hashSync(password, 10);
 
-    database('users').insert({
+    database('users').update({
         email,
         password: hash,
-    }).then(() => {
-        return response.status(201).json({
-            success: true,
-            message: 'User created successfully.',
+    })
+        .where({ email })
+        .then(() => {
+            return response.status(201).json({
+                success: true,
+                message: 'User update successfully.',
+            });
+        }).catch(error => {
+            return response.status(500).json({
+                error: error.message,
+            });
         });
-    }).catch(error => {
-        return response.status(500).json({
-            error: error.message,
-        });
-    });
 
 }
