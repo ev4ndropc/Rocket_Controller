@@ -13,7 +13,7 @@ export default async function listClients(request, response) {
 
     clients.forEach(client => {
       if(client.price != null) {
-        total_price = parseFloat(total_price)+parseFloat(client.price).toFixed(2);
+        total_price = parseFloat(total_price).toFixed(2)+parseFloat(client.price).toFixed(2);
       }
     });
 

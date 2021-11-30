@@ -467,11 +467,11 @@ export default function Page(props) {
             </Flex>
             <Flex w="100%" overflow="scroll" flexDir="column" maxH="420px">
               <Flex w="100%" mt="1rem" mb="0.3rem" alignItems="center" flexDir="row">
-                <Flex flexDir="row">
+                <Flex flexDir="row" alignItems="center">
                   <FaUsers />
                   <Text ml="0.3rem">Total de clientes: <chakra.strong ml="0.3rem">{clients.length}</chakra.strong></Text>
                 </Flex>
-                <Flex flexDir="row">
+                <Flex flexDir="row" alignItems="center" ml="1rem">
                   <FaRegMoneyBillAlt />
                   <Text ml="0.3rem">Total mensal: <chakra.strong ml="0.3rem">{clients.total_price}</chakra.strong></Text>
                 </Flex>
