@@ -405,8 +405,9 @@ export default function Page(props) {
     <>
       <Head>
         <title>Lista de clientes</title>
+        <link rel="icon" type="image/x-icon" href="/favicon.png" />
       </Head>
-      <Flex className="container" w="100%" h="100%" overflowY="scroll" p="24px" bgColor="gray.300" justifyContent="center" alignItems="center">
+      <Flex className="container" background="url(/bg.png)" backgroundSize="cover" w="100%" h="100%" overflowY="scroll" p="24px" bgColor="gray.300" justifyContent="center" alignItems="center">
         <Flex w="100%" maxW="1280px" p="1rem" borderRadius="md" boxShadow="md" bgColor="white" justifyContent="flex-start" alignItems="center" flexDir="column">
           <Flex w="100%" maxW="1200px" direction="column" alignItems="center" mt="2rem">
             <Heading>Lista de clientes</Heading>
@@ -555,7 +556,7 @@ export default function Page(props) {
                   <Input value={clientContact} onChange={(e) => setClientContact(e.target.value)} name="contact" type="text" placeholder="Contato" />
                 </FormControl>
                 <FormControl mt="0.5rem">
-                  <FormLabel>Link do Spotify</FormLabel>
+                  <FormLabel>Dominio</FormLabel>
                   <Input value={domain} onChange={(e) => setDomain(e.target.value)} name="domain" type="text" placeholder="Dominio" />
                 </FormControl>
                 <FormControl mt="1rem">
