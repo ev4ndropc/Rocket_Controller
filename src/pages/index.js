@@ -466,7 +466,7 @@ export default function Page(props) {
               </Flex>
             </Flex>
             <Flex w="100%" overflow="scroll" flexDir="column" maxH="420px">
-              <Flex w="100%" mt="1rem" mb="0.3rem" alignItems="center" flexDir="column">
+              <Flex w="100%" mt="1rem" mb="0.3rem" alignItems="center" flexDir="row">
                 <Flex flexDir="row">
                   <FaUsers />
                   <Text ml="0.3rem">Total de clientes: <chakra.strong ml="0.3rem">{clients.length}</chakra.strong></Text>
