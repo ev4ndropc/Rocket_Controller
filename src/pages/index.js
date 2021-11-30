@@ -49,6 +49,8 @@ import { FaUsers, FaRegMoneyBillAlt } from 'react-icons/fa'
 import { IoCashOutline } from 'react-icons/io5'
 import { BsCheckCircle } from 'react-icons/bs'
 
+import getExpireUsers from './utils'
+
 export default function Page(props) {
   const toast = useToast()
   const [isOpen, setIsOpen] = useState(false)
