@@ -13,7 +13,7 @@ export default async function addClient(request, response) {
         return response.status(400).json({ message: 'Bad Request' });
 
     try {
-        await database('clients').insert({ name, contact, domain, expire_at });
+        await database('clients').insert({ name, contact, domain, price, expire_at });
         const clients = await database('clients').select();
         return response.status(201).json({ success: true, clients });
     } catch (error) {

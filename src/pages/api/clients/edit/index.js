@@ -2,7 +2,7 @@ import { getSession } from "next-auth/client"
 import database from '../../../../database';
 
 export default async function editClient(request, response) {
-    const { id, name, contact, expire_at } = request.body;
+    const { id, name, contact, domain, price, expire_at } = request.body;
 
     const session = await getSession({ req: request });
     if (!session)
@@ -16,6 +16,8 @@ export default async function editClient(request, response) {
         const update = await database.update({
             name: name,
             contact: contact,
+            domain: domain,
+            price: price,
             expire_at: expire_at
         }).table('clients').where({ id: id });
 

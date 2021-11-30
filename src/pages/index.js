@@ -501,8 +501,8 @@ export default function Page(props) {
                     <Tr key={client.id}>
                       <Td>{client.name}</Td>
                       <Td>{client.contact}</Td>
-                      <Td><chakra.a color="blue.300" href={client.domain} target="_blank">{client.domain}</chakra.a></Td>
-                      <Td>{client.price}</Td>
+                      <Td><chakra.a color="blue.300" href={`https://${client.domain}`} target="_blank">{client.domain}</chakra.a></Td>
+                      <Td>R$ {client.price}</Td>
                       <Td minW="232px" fontWeight={moment().unix() > moment(client.expire_at).unix() ? 'bold' : ''} color={moment().unix() > moment(client.expire_at).unix() ? 'red.400' : ''}>{moment(client.expire_at).format('DD-MM-yyyy')}{moment().unix() > moment(client.expire_at).unix() ? ' - (Vencido)' : ''}</Td>
                       <Td>
                         <Button mr="0.1rem" colorScheme="green" leftIcon={<IoCashOutline />} onClick={() => setAsPaid(client.id)}>Pago</Button>
@@ -569,7 +569,7 @@ export default function Page(props) {
                 </FormControl>
                 <FormControl mt="0.5rem">
                   <FormLabel>Preço</FormLabel>
-                  <Input value={price} onChange={(e) => setPrice(e.target.value)} name="price" type="text" placeholder="Preço" />
+                  <Input value={price} onChange={(e) => setPrice(e.target.value)} name="price" type="number" placeholder="Preço" />
                 </FormControl>
                 <FormControl mt="1rem">
                   <FormLabel>Data de expiração</FormLabel>
