@@ -14,7 +14,7 @@ export default async function deleteClient(request, response) {
 
         clients.forEach(client => {
             if(client.price != null) {
-                total_price += parseFloat(client.price).toFixed(2);
+                total_price = parseFloat(total_price)+parseFloat(client.price).toFixed(2);
             }
         });
         return response.status(200).json({ success: true, clients, total_price });
