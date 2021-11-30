@@ -66,6 +66,7 @@ export default function Page(props) {
   const [clientName, setClientName] = useState('')
   const [clientContact, setClientContact] = useState('')
   const [domain, setDomain] = useState('')
+  const [price, setPrice] = useState('')
   const [expireAt, setExpireAt] = useState(moment().format('yyyy-MM-DD'))
 
   const [searchFor, setSearchFor] = useState('')
@@ -92,7 +93,8 @@ export default function Page(props) {
     const client_data = clients.filter(item => item.id === client)
     setClientName(client_data[0].name)
     setClientContact(client_data[0].contact)
-    setDomain(client_data[0].spotify_link)
+    setDomain(client_data[0].domain)
+    setPrice(client_data[0].price)
     setExpireAt(client_data[0].expire_at)
     setIsOpen(true)
   }
@@ -120,6 +122,7 @@ export default function Page(props) {
       name: clientName,
       contact: clientContact,
       domain: domain,
+      price: price,
       expire_at: expireAt
     }
     const response = await fetch('/api/clients/add', {
@@ -136,6 +139,7 @@ export default function Page(props) {
       setClientName('')
       setClientContact('')
       setDomain('')
+      setPrice('')
       setExpireAt('')
       return toast({
         title: 'Cliente adicionado com sucesso',
@@ -160,7 +164,8 @@ export default function Page(props) {
       id: clientId,
       name: clientName,
       contact: clientContact,
-      spotify_link: domain,
+      domain: domain,
+      price: price,
       expire_at: expireAt
     }
 
@@ -179,6 +184,7 @@ export default function Page(props) {
       setClientName('')
       setClientContact('')
       setDomain('')
+      setPrice('')
       setExpireAt('')
       return toast({
         title: 'Cliente editado com sucesso',
@@ -459,7 +465,7 @@ export default function Page(props) {
                 </FormControl>
               </Flex>
             </Flex>
-            <Flex w="100%" overflow="scroll" flexDir="column">
+            <Flex w="100%" overflow="scroll" flexDir="column" maxH="420px">
               <Flex w="100%" mt="1rem" mb="0.3rem" alignItems="center" flexDir="row">
                 <FaUsers />
                 <Text ml="0.3rem">Total de clientes: <chakra.strong ml="0.3rem">{clients.length}</chakra.strong></Text>
@@ -470,6 +476,7 @@ export default function Page(props) {
                     <Th color="white">Nome</Th>
                     <Th color="white">Contato</Th>
                     <Th color="white">Dominio</Th>
+                    <Th color="white">Preço</Th>
                     <Th color="white" display="flex" justifyContent="flex-start" alignItems="center" flexDir="row">
                       <Flex>Expira em</Flex>
                       <Flex flexDir="column" ml="0.5rem">
@@ -494,8 +501,9 @@ export default function Page(props) {
                     <Tr key={client.id}>
                       <Td>{client.name}</Td>
                       <Td>{client.contact}</Td>
-                      <Td><chakra.a color="blue.300" href={client.spotify_link} target="_blank">{client.spotify_link}</chakra.a></Td>
-                      <Td minW="232px" fontWeight={moment().format('DD-MM-yyyy') > moment(client.expire_at).format('DD-MM-yyyy') ? 'bold' : ''} color={moment().format('DD-MM-yyyy') > moment(client.expire_at).format('DD-MM-yyyy') ? 'red.400' : ''}>{moment(client.expire_at).format('DD-MM-yyyy')}{moment().format('DD-MM-yyyy') > moment(client.expire_at).format('DD-MM-yyyy') ? ' - (Vencido)' : ''}</Td>
+                      <Td><chakra.a color="blue.300" href={client.domain} target="_blank">{client.domain}</chakra.a></Td>
+                      <Td>{client.price}</Td>
+                      <Td minW="232px" fontWeight={moment().unix() > moment(client.expire_at).unix() ? 'bold' : ''} color={moment().unix() > moment(client.expire_at).unix() ? 'red.400' : ''}>{moment(client.expire_at).format('DD-MM-yyyy')}{moment().unix() > moment(client.expire_at).unix() ? ' - (Vencido)' : ''}</Td>
                       <Td>
                         <Button mr="0.1rem" colorScheme="green" leftIcon={<IoCashOutline />} onClick={() => setAsPaid(client.id)}>Pago</Button>
                       </Td>
@@ -558,6 +566,10 @@ export default function Page(props) {
                 <FormControl mt="0.5rem">
                   <FormLabel>Dominio</FormLabel>
                   <Input value={domain} onChange={(e) => setDomain(e.target.value)} name="domain" type="text" placeholder="Dominio" />
+                </FormControl>
+                <FormControl mt="0.5rem">
+                  <FormLabel>Preço</FormLabel>
+                  <Input value={price} onChange={(e) => setPrice(e.target.value)} name="price" type="text" placeholder="Preço" />
                 </FormControl>
                 <FormControl mt="1rem">
                   <FormLabel>Data de expiração</FormLabel>
