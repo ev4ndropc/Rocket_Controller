@@ -21,9 +21,14 @@ export default async function editClient(request, response) {
             expire_at: expire_at
         }).table('clients').where({ id: id });
 
-        const clients = await database.select().table('clients');
+        const clients = await database.select().table('clients').orderBy('expire_at', 'asc');
+        var total_price = 0;
 
-        response.status(200).json({ success: true, clients });
+        clients.forEach(client => {
+            total_price += parseFloat(client.price).toFixed(2);
+        });
+
+        response.status(200).json({ success: true, clients, total_price });
     } catch (error) {
         response.status(500).json({ error: error.message });
     }

@@ -45,7 +45,7 @@ import { AiOutlineUserAdd, AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai
 import { IoMdArrowDropup, IoMdArrowDropdown } from 'react-icons/io'
 import { MdLogout, MdOutlineAccountCircle } from 'react-icons/md'
 import { BiSearchAlt, BiCog } from 'react-icons/bi'
-import { FaUsers } from 'react-icons/fa'
+import { FaUsers, FaRegMoneyBillAlt } from 'react-icons/fa'
 import { IoCashOutline } from 'react-icons/io5'
 import { BsCheckCircle } from 'react-icons/bs'
 
@@ -466,9 +466,15 @@ export default function Page(props) {
               </Flex>
             </Flex>
             <Flex w="100%" overflow="scroll" flexDir="column" maxH="420px">
-              <Flex w="100%" mt="1rem" mb="0.3rem" alignItems="center" flexDir="row">
-                <FaUsers />
-                <Text ml="0.3rem">Total de clientes: <chakra.strong ml="0.3rem">{clients.length}</chakra.strong></Text>
+              <Flex w="100%" mt="1rem" mb="0.3rem" alignItems="center" flexDir="column">
+                <Flex flexDir="row">
+                  <FaUsers />
+                  <Text ml="0.3rem">Total de clientes: <chakra.strong ml="0.3rem">{clients.length}</chakra.strong></Text>
+                </Flex>
+                <Flex flexDir="row">
+                  <FaRegMoneyBillAlt />
+                  <Text ml="0.3rem">Total mensal: <chakra.strong ml="0.3rem">{clients.total_price}</chakra.strong></Text>
+                </Flex>
               </Flex>
               <Table variant="striped" m="0 0 1rem" boxShadow="md">
                 <Thead bgColor="gray.500">
@@ -502,7 +508,7 @@ export default function Page(props) {
                       <Td>{client.name}</Td>
                       <Td>{client.contact}</Td>
                       <Td><chakra.a color="blue.300" href={`https://${client.domain}`} target="_blank">{client.domain}</chakra.a></Td>
-                      <Td>R$ {client.price}</Td>
+                      <Td minW="120px">R$ {client.price}</Td>
                       <Td minW="232px" fontWeight={moment().unix() > moment(client.expire_at).unix() ? 'bold' : ''} color={moment().unix() > moment(client.expire_at).unix() ? 'red.400' : ''}>{moment(client.expire_at).format('DD-MM-yyyy')}{moment().unix() > moment(client.expire_at).unix() ? ' - (Vencido)' : ''}</Td>
                       <Td>
                         <Button mr="0.1rem" colorScheme="green" leftIcon={<IoCashOutline />} onClick={() => setAsPaid(client.id)}>Pago</Button>

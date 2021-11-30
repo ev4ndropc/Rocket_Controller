@@ -9,7 +9,13 @@ export default async function listClients(request, response) {
 
   try {
     const clients = await database('clients').orderBy('expire_at', orderBy ? orderBy : 'asc');
-    return response.status(200).json({ success: true, clients });
+    var total_price = 0;
+
+    clients.forEach(client => {
+      total_price += parseFloat(client.price).toFixed(2);
+    });
+
+    return response.status(200).json({ success: true, clients, total_price });
   } catch (error) {
     return response.status(500).json({ error: error.message });
   }
