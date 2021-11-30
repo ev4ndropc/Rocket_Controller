@@ -65,7 +65,7 @@ export default function Page(props) {
   //Add new client data
   const [clientName, setClientName] = useState('')
   const [clientContact, setClientContact] = useState('')
-  const [clientSpotifyLink, setClientSpotifyLink] = useState('')
+  const [domain, setDomain] = useState('')
   const [expireAt, setExpireAt] = useState(moment().format('yyyy-MM-DD'))
 
   const [searchFor, setSearchFor] = useState('')
@@ -81,7 +81,7 @@ export default function Page(props) {
     setModalType('add')
     setClientName('')
     setClientContact('')
-    setClientSpotifyLink('')
+    setDomain('')
     setExpireAt(moment().format('yyyy-MM-DD'))
     setIsOpen(true)
   }
@@ -92,7 +92,7 @@ export default function Page(props) {
     const client_data = clients.filter(item => item.id === client)
     setClientName(client_data[0].name)
     setClientContact(client_data[0].contact)
-    setClientSpotifyLink(client_data[0].spotify_link)
+    setDomain(client_data[0].spotify_link)
     setExpireAt(client_data[0].expire_at)
     setIsOpen(true)
   }
@@ -119,7 +119,7 @@ export default function Page(props) {
     const data = {
       name: clientName,
       contact: clientContact,
-      spotify_link: clientSpotifyLink,
+      domain: domain,
       expire_at: expireAt
     }
     const response = await fetch('/api/clients/add', {
@@ -135,7 +135,7 @@ export default function Page(props) {
       setIsOpen(false)
       setClientName('')
       setClientContact('')
-      setClientSpotifyLink('')
+      setDomain('')
       setExpireAt('')
       return toast({
         title: 'Cliente adicionado com sucesso',
@@ -160,7 +160,7 @@ export default function Page(props) {
       id: clientId,
       name: clientName,
       contact: clientContact,
-      spotify_link: clientSpotifyLink,
+      spotify_link: domain,
       expire_at: expireAt
     }
 
@@ -178,7 +178,7 @@ export default function Page(props) {
       onClose()
       setClientName('')
       setClientContact('')
-      setClientSpotifyLink('')
+      setDomain('')
       setExpireAt('')
       return toast({
         title: 'Cliente editado com sucesso',
@@ -448,7 +448,7 @@ export default function Page(props) {
                   <Select id="search_type" value={searchWhere} onChange={(e) => setSearchWhere(e.target.value)} placeholder="Pesquisar em">
                     <option value="name">Nome</option>
                     <option value="contact">Contato</option>
-                    <option value="spotify_link">Link do Spotify</option>
+                    <option value="spotify_link">Dominio</option>
                   </Select>
                 </FormControl>
               </Flex>
@@ -468,7 +468,7 @@ export default function Page(props) {
                   <Tr>
                     <Th color="white">Nome</Th>
                     <Th color="white">Contato</Th>
-                    <Th color="white">Link do Spotify</Th>
+                    <Th color="white">Dominio</Th>
                     <Th color="white" display="flex" justifyContent="flex-start" alignItems="center" flexDir="row">
                       <Flex>Expira em</Flex>
                       <Flex flexDir="column" ml="0.5rem">
@@ -556,7 +556,7 @@ export default function Page(props) {
                 </FormControl>
                 <FormControl mt="0.5rem">
                   <FormLabel>Link do Spotify</FormLabel>
-                  <Input value={clientSpotifyLink} onChange={(e) => setClientSpotifyLink(e.target.value)} name="spotify_link" type="text" placeholder="Link do Spotify" />
+                  <Input value={domain} onChange={(e) => setDomain(e.target.value)} name="domain" type="text" placeholder="Dominio" />
                 </FormControl>
                 <FormControl mt="1rem">
                   <FormLabel>Data de expiração</FormLabel>
