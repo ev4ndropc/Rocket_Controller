@@ -101,9 +101,10 @@ export default function Page(props) {
     setIsOpen(true)
   }
 
-  const handleDeleteClient = (client) => {
+  const handleDeleteClient = (client, domain) => {
     setModalType('delete')
     setClientId(client)
+    setDomain(domain)
     setIsOpen(true)
   }
 
@@ -119,7 +120,7 @@ export default function Page(props) {
         isClosable: true,
       })
       setClients(data.clients)
-      console.log(data)
+      setDomain('')
     } else {
       toast({
         title: 'Erro!',
@@ -128,6 +129,8 @@ export default function Page(props) {
         duration: 9000,
         isClosable: true,
       })
+      setDomain('')
+      return
     }
   }
 
@@ -222,7 +225,7 @@ export default function Page(props) {
   }
 
   const handleConfirDelete = async () => {
-    const res = await fetch(`/api/clients/delete?id=${clientId}`, {
+    const res = await fetch(`/api/clients/delete?id=${clientId}&domain=${domain}`, {
       method: 'DELETE',
     })
     const data = await res.json()
@@ -542,7 +545,7 @@ export default function Page(props) {
                         <chakra.a href={`${client.contact.includes('http') ? client.contact : 'https://' + client.contact}`}>{client.contact}</chakra.a>
                       </Td>
                       <Td><chakra.a href={`https://${client.domain}`} target="_blank">{client.domain}</chakra.a></Td>
-                      <Td>{client.state == 'Suspend' ? <Button onClick={() => handleChangeState(client.domain, 'Activate')} colorScheme="green">Reativar</Button>: <Button onClick={() => handleChangeState(client.domain, 'Suspend')} colorScheme="red">Desativar</Button> }</Td>
+                      <Td>{client.state == 'Suspend' ? <Button onClick={() => handleChangeState(client.domain, 'Activate')} colorScheme="green">Reativar</Button> : <Button onClick={() => handleChangeState(client.domain, 'Suspend')} colorScheme="red">Desativar</Button>}</Td>
                       <Td minW="120px">R$ {client.price}</Td>
                       <Td minW="232px" fontWeight={moment().unix() > moment(client.expire_at).unix() ? 'bold' : ''} color={moment().unix() > moment(client.expire_at).unix() ? 'red.400' : ''}>{moment(client.expire_at).format('DD-MM-yyyy')}{moment().unix() > moment(client.expire_at).unix() ? ' - (Vencido)' : ''}</Td>
                       <Td>
@@ -550,7 +553,7 @@ export default function Page(props) {
                       </Td>
                       <Td minW="260px">
                         <Button mr="0.1rem" colorScheme="blue" leftIcon={<AiOutlineEdit />} onClick={() => handleEditClient(client.id)}>Editar</Button>
-                        <Button ml="0.1rem" colorScheme="red" leftIcon={<AiOutlineDelete />} onClick={() => handleDeleteClient(client.id)}>Excluir</Button>
+                        <Button ml="0.1rem" colorScheme="red" leftIcon={<AiOutlineDelete />} onClick={() => handleDeleteClient(client.id, client.domain)}>Excluir</Button>
                       </Td>
                     </Tr>
                   ))}
