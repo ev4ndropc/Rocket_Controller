@@ -15,10 +15,11 @@ export default async function addClient(request, response) {
         return response.status(400).json({ message: 'Bad Request' });
 
     try {
-        var client = await database('clients').where({ id })
+        var client = await database('clients').where({ id }).first()
 
-        var atual = client.expire_at
-        var new_date_expire = moment(atual).add(30, 'days').format('yyyy-MM-DD');
+        var new_date_expire = moment(client.expire_at).unix() + 2592000;
+
+        new_date_expire = moment(new_date_expire).format('YYYY-MM-DD');
 
         await database('clients').update({ expire_at: new_date_expire }).where({ id });
         const clients = await database('clients').select();
