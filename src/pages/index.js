@@ -49,7 +49,7 @@ import { FaUsers, FaRegMoneyBillAlt } from 'react-icons/fa'
 import { IoCashOutline } from 'react-icons/io5'
 import { BsCheckCircle } from 'react-icons/bs'
 
-import getExpireUsers from './utils'
+// import getExpireUsers from './utils'
 
 export default function Page(props) {
   const toast = useToast()
@@ -61,6 +61,7 @@ export default function Page(props) {
   const [repeatPassword, setRepeatPassword] = useState('')
 
   const [clients, setClients] = useState([])
+  const [totalPrice, setTotalPrice] = useState(0)
   const [clientId, setClientId] = useState(null)
   const [modalType, setModalType] = useState('')
 
@@ -78,6 +79,7 @@ export default function Page(props) {
     const res = await fetch('/api/clients/list?orderBy=' + orderBy)
     const data = await res.json()
     setClients(data.clients)
+    setTotalPrice(data.total_price)
   }
 
   const handleAddNewCLient = () => {
@@ -105,8 +107,6 @@ export default function Page(props) {
     setModalType('delete')
     setClientId(client)
     setIsOpen(true)
-
-    console.log(modalType)
   }
 
   const handleConfirmAddNewClient = async () => {
@@ -137,6 +137,7 @@ export default function Page(props) {
     const json = await response.json()
     if (json.success) {
       setClients(json.clients)
+      setTotalPrice(json.total_price)
       setIsOpen(false)
       setClientName('')
       setClientContact('')
@@ -182,6 +183,7 @@ export default function Page(props) {
     const json = await response.json()
     if (json.success) {
       setClients(json.clients)
+      setTotalPrice(json.total_price)
       onClose()
       setClientName('')
       setClientContact('')
@@ -211,6 +213,7 @@ export default function Page(props) {
       })
     } else {
       setClients(data.clients)
+      setTotalPrice(data.total_price)
       console.log(data)
       setIsOpen(false)
       return toast({
@@ -226,7 +229,9 @@ export default function Page(props) {
     if (!searchFor && !searchWhere) {
       const res = await fetch('/api/clients/list')
       const data = await res.json()
-      return setClients(data.clients)
+      setClients(data.clients)
+      setTotalPrice(data.total_price)
+      return
     } else if (!searchWhere) {
       return toast({
         title: 'Preencha o campo de "Pesquisar em"',
@@ -263,6 +268,7 @@ export default function Page(props) {
     const data = await res.json()
     if (data.success) {
       setClients(data.clients)
+      setTotalPrice(data.total_price)
       return toast({
         title: 'Cliente marcado como pago',
         status: 'success',
@@ -402,10 +408,11 @@ export default function Page(props) {
     const getClients = async () => {
       const res = await fetch('/api/clients/list')
       const data = await res.json()
-      return data.clients
+      setClients(data.clients)
+      setTotalPrice(data.total_price)
     }
 
-    getClients().then(data => setClients(data))
+    getClients()
 
   }, [])
 
@@ -429,7 +436,7 @@ export default function Page(props) {
                 <Button onClick={() => signOut()} colorScheme="red"><MdLogout size="20px" /></Button>
 
                 <Menu placement="auto-start">
-                  <MenuButton as={Avatar} cursor="pointer" src="/favicon.ico" ml="1rem" size="md" />
+                  <MenuButton as={Avatar} cursor="pointer" src="/favicon.png" ml="1rem" size="md" />
                   <MenuList boxShadow="md">
                     <MenuItem onClick={handleChangeMyInformation}>
                       <BiCog />
@@ -473,9 +480,9 @@ export default function Page(props) {
                   <FaUsers />
                   <Text ml="0.3rem">Total de clientes: <chakra.strong ml="0.3rem">{clients.length}</chakra.strong></Text>
                 </Flex>
-                <Flex flexDir="row" alignItems="center" ml="1rem">
+                <Flex flexDir="row" alignItems="center" ml="2rem">
                   <FaRegMoneyBillAlt />
-                  <Text ml="0.3rem">Total mensal: <chakra.strong ml="0.3rem">{clients.total_price}</chakra.strong></Text>
+                  <Text ml="0.3rem">Total mensal: <chakra.strong ml="0.3rem">R$ {totalPrice}</chakra.strong></Text>
                 </Flex>
               </Flex>
               <Table variant="striped" m="0 0 1rem" boxShadow="md">
@@ -508,8 +515,10 @@ export default function Page(props) {
                   {clients.map(client => (
                     <Tr key={client.id}>
                       <Td>{client.name}</Td>
-                      <Td>{client.contact}</Td>
-                      <Td><chakra.a color="blue.300" href={`https://${client.domain}`} target="_blank">{client.domain}</chakra.a></Td>
+                      <Td>
+                        <chakra.a href={`${client.contact.includes('http') ? client.contact : 'https://' + client.contact}`}>{client.contact}</chakra.a>
+                      </Td>
+                      <Td><chakra.a href={`https://${client.domain}`} target="_blank">{client.domain}</chakra.a></Td>
                       <Td minW="120px">R$ {client.price}</Td>
                       <Td minW="232px" fontWeight={moment().unix() > moment(client.expire_at).unix() ? 'bold' : ''} color={moment().unix() > moment(client.expire_at).unix() ? 'red.400' : ''}>{moment(client.expire_at).format('DD-MM-yyyy')}{moment().unix() > moment(client.expire_at).unix() ? ' - (Vencido)' : ''}</Td>
                       <Td>

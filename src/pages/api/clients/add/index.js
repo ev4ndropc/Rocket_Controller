@@ -19,9 +19,9 @@ export default async function addClient(request, response) {
         var total_price = 0;
 
         clients.forEach(client => {
-          if(client.price != null) {
-            total_price = parseFloat(total_price).toFixed(2)+parseFloat(client.price).toFixed(2);
-          }
+            if (client.price != null) {
+                total_price = total_price + parseFloat(Number(client.price));
+            }
         });
 
         return response.status(201).json({ success: true, clients, total_price });
