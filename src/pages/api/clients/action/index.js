@@ -17,7 +17,7 @@ export default async function deleteClient(request, response) {
             "body": "{\"adminUser\":\"" + process.env.CYBERPANEL_ADMIN + "\",\"adminPass\":\"" + process.env.CYBERPANEL_PASS + ".com\",\"websiteName\":\"" + domain + "\",\"state\":\"" + state + "\"}"
         }).then(res => res.json());
 
-        await database.update({ state }).from('clients').where('domain', id);
+        await database.update({ state }).from('clients').where('domain', domain);
         const clients = await database.select().from('clients').orderBy('expire_at', 'asc');
         var total_price = 0;
 
