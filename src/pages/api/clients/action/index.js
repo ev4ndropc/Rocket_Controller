@@ -14,7 +14,7 @@ export default async function deleteClient(request, response) {
             "headers": {
                 "Content-Type": "application/json"
             },
-            "body": "{\"adminUser\":\"" + process.env.CYBERPANEL_ADMIN + "\",\"adminPass\":\"" + process.env.CYBERPANEL_PASS + ".com\",\"websiteName\":\"" + domain + "\",\"state\":\"" + state + "\"}"
+            "body": "{\"adminUser\":\"" + process.env.CYBERPANEL_ADMIN + "\",\"adminPass\":\"" + process.env.CYBERPANEL_PASS + "\",\"websiteName\":\"" + domain + "\",\"state\":\"" + state + "\"}"
         }).then(res => res.json());
 
         await database.update({ state }).from('clients').where('domain', domain);
