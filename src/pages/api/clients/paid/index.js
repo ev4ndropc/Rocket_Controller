@@ -17,7 +17,7 @@ export default async function addClient(request, response) {
     try {
         var client = await database('clients').where({ id }).first()
 
-        var new_date_expire = moment(client.expire_at).unix() + 2592000 * 1000;
+        var new_date_expire = moment(client.expire_at.split('-')[2] + client.expire_at.split('-')[1] + client.expire_at.split('-')[0]).unix() + 2592000 * 1000;
 
         new_date_expire = moment(new_date_expire).format('YYYY-MM-DD');
 
