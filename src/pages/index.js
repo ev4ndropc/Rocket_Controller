@@ -49,8 +49,6 @@ import { FaUsers, FaRegMoneyBillAlt } from 'react-icons/fa'
 import { IoCashOutline } from 'react-icons/io5'
 import { BsCheckCircle } from 'react-icons/bs'
 
-// import getExpireUsers from './utils'
-
 export default function Page(props) {
   const toast = useToast()
   const [isOpen, setIsOpen] = useState(false)
@@ -107,6 +105,30 @@ export default function Page(props) {
     setModalType('delete')
     setClientId(client)
     setIsOpen(true)
+  }
+
+  const handleChangeState = async (client, state) => {
+    const res = await fetch('/api/clients/action?domain=' + client + '&state=' + state)
+    const data = await res.json()
+    if (data.success) {
+      toast({
+        title: 'Sucesso!',
+        description: 'Cliente alterado com sucesso!',
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      })
+      setClients(data.clients)
+      console.log(data)
+    } else {
+      toast({
+        title: 'Erro!',
+        description: 'Não foi possível alterar o cliente!',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      })
+    }
   }
 
   const handleConfirmAddNewClient = async () => {
@@ -491,6 +513,7 @@ export default function Page(props) {
                     <Th color="white">Nome</Th>
                     <Th color="white">Contato</Th>
                     <Th color="white">Dominio</Th>
+                    <Th color="white">Status</Th>
                     <Th color="white">Preço</Th>
                     <Th color="white" display="flex" justifyContent="flex-start" alignItems="center" flexDir="row">
                       <Flex>Expira em</Flex>
@@ -519,6 +542,7 @@ export default function Page(props) {
                         <chakra.a href={`${client.contact.includes('http') ? client.contact : 'https://' + client.contact}`}>{client.contact}</chakra.a>
                       </Td>
                       <Td><chakra.a href={`https://${client.domain}`} target="_blank">{client.domain}</chakra.a></Td>
+                      <Td>{client.state == 'Suspend' ? <Button onClick={() => handleChangeState(client.domain, 'Activate')} colorScheme="green">Reativar</Button>: <Button onClick={() => handleChangeState(client.domain, 'Suspend')} colorScheme="red">Desativar</Button> }</Td>
                       <Td minW="120px">R$ {client.price}</Td>
                       <Td minW="232px" fontWeight={moment().unix() > moment(client.expire_at).unix() ? 'bold' : ''} color={moment().unix() > moment(client.expire_at).unix() ? 'red.400' : ''}>{moment(client.expire_at).format('DD-MM-yyyy')}{moment().unix() > moment(client.expire_at).unix() ? ' - (Vencido)' : ''}</Td>
                       <Td>
