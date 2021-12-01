@@ -9,12 +9,12 @@ export default async function deleteClient(request, response) {
         return response.status(401).json({ message: 'Unauthorized' });
 
     try {
-        const change = await fetch('https://'+domain+':8090/api/submitWebsiteStatus', {
+        const change = await fetch('https://' + process.env.DOMAIN_HOST + ':8090/api/submitWebsiteStatus', {
             "method": "POST",
             "headers": {
-              "Content-Type": "application/json"
+                "Content-Type": "application/json"
             },
-            "body": "{\"adminUser\":\""+process.env.CYBERPANEL_ADMIN+"\",\"adminPass\":\""+process.env.CYBERPANEL_PASS+".com\",\"websiteName\":\""+domain+"\",\"state\":\""+state+"\"}"
+            "body": "{\"adminUser\":\"" + process.env.CYBERPANEL_ADMIN + "\",\"adminPass\":\"" + process.env.CYBERPANEL_PASS + ".com\",\"websiteName\":\"" + domain + "\",\"state\":\"" + state + "\"}"
         }).then(res => res.json());
 
         await database.update({ state }).from('clients').where('domain', id);
