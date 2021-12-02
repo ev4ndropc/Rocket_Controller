@@ -21,7 +21,7 @@ export default async function addClient(request, response) {
 
         await database('clients').update({ expire_at: new_date_expire }).where({ id });
         const clients = await database('clients').select().orderBy('expire_at', 'asc');
-        return response.status(201).json({ success: true, clients });
+        return response.status(201).json({ success: true, clients, new_date_expire });
     } catch (error) {
         return response.status(500).json({ error: error.message });
     }
