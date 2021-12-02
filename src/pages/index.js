@@ -499,7 +499,7 @@ export default function Page(props) {
                 </FormControl>
               </Flex>
             </Flex>
-            <Flex w="100%" overflow="scroll" flexDir="column" maxH="420px">
+            <Flex w="100%" flexDir="column" maxH="480px">
               <Flex w="100%" mt="1rem" mb="0.3rem" alignItems="center" flexDir="row">
                 <Flex flexDir="row" alignItems="center">
                   <FaUsers />
@@ -510,55 +510,57 @@ export default function Page(props) {
                   <Text ml="0.3rem">Total mensal: <chakra.strong ml="0.3rem">R$ {totalPrice}</chakra.strong></Text>
                 </Flex>
               </Flex>
-              <Table variant="striped" m="0 0 1rem" boxShadow="md">
-                <Thead bgColor="gray.500">
-                  <Tr>
-                    <Th color="white">Nome</Th>
-                    <Th color="white">Contato</Th>
-                    <Th color="white">Dominio</Th>
-                    <Th color="white">Status</Th>
-                    <Th color="white">Preço</Th>
-                    <Th color="white" display="flex" justifyContent="flex-start" alignItems="center" flexDir="row">
-                      <Flex>Expira em</Flex>
-                      <Flex flexDir="column" ml="0.5rem">
-                        <Tooltip placement="end" label="Ordernar por data de expiração mais próxima">
-                          <Flex mb="-3px" cursor="pointer">
-                            <IoMdArrowDropup onClick={() => setListBy('asc')} size="18px" />
-                          </Flex>
-                        </Tooltip>
-                        <Tooltip placement="end" label="Ordernar por data de expiração mais longe">
-                          <Flex mt="-3px" cursor="pointer">
-                            <IoMdArrowDropdown onClick={() => setListBy('desc')} size="18px" />
-                          </Flex>
-                        </Tooltip>
-                      </Flex>
-                    </Th>
-                    <Th color="white">Marcar como Pago</Th>
-                    <Th color="white">Ações</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {clients.map(client => (
-                    <Tr key={client.id}>
-                      <Td>{client.name}</Td>
-                      <Td>
-                        <chakra.a href={`${client.contact.includes('http') ? client.contact : 'https://' + client.contact}`}>{client.contact}</chakra.a>
-                      </Td>
-                      <Td><chakra.a href={`https://${client.domain}`} target="_blank">{client.domain}</chakra.a></Td>
-                      <Td>{client.state == 'Suspend' ? <Button onClick={() => handleChangeState(client.domain, 'Activate')} colorScheme="green">Reativar</Button> : <Button onClick={() => handleChangeState(client.domain, 'Suspend')} colorScheme="red">Desativar</Button>}</Td>
-                      <Td minW="120px">R$ {client.price}</Td>
-                      <Td minW="232px" fontWeight={moment().unix() > moment(client.expire_at).unix() ? 'bold' : ''} color={moment().unix() > moment(client.expire_at).unix() ? 'red.400' : ''}>{moment(client.expire_at).format('DD-MM-yyyy')}{moment().unix() > moment(client.expire_at).unix() ? ' - (Vencido)' : ''}</Td>
-                      <Td>
-                        <Button mr="0.1rem" colorScheme="green" leftIcon={<IoCashOutline />} onClick={() => setAsPaid(client.id)}>Pago</Button>
-                      </Td>
-                      <Td minW="260px">
-                        <Button mr="0.1rem" colorScheme="blue" leftIcon={<AiOutlineEdit />} onClick={() => handleEditClient(client.id)}>Editar</Button>
-                        <Button ml="0.1rem" colorScheme="red" leftIcon={<AiOutlineDelete />} onClick={() => handleDeleteClient(client.id, client.domain)}>Excluir</Button>
-                      </Td>
+              <Flex overflow="scroll">
+                <Table variant="striped" m="0 0 1rem" boxShadow="md">
+                  <Thead bgColor="gray.500">
+                    <Tr>
+                      <Th color="white">Nome</Th>
+                      <Th color="white">Contato</Th>
+                      <Th color="white">Dominio</Th>
+                      <Th color="white">Status</Th>
+                      <Th color="white">Preço</Th>
+                      <Th color="white" display="flex" justifyContent="flex-start" alignItems="center" flexDir="row">
+                        <Flex>Expira em</Flex>
+                        <Flex flexDir="column" ml="0.5rem">
+                          <Tooltip placement="end" label="Ordernar por data de expiração mais próxima">
+                            <Flex mb="-3px" cursor="pointer">
+                              <IoMdArrowDropup onClick={() => setListBy('asc')} size="18px" />
+                            </Flex>
+                          </Tooltip>
+                          <Tooltip placement="end" label="Ordernar por data de expiração mais longe">
+                            <Flex mt="-3px" cursor="pointer">
+                              <IoMdArrowDropdown onClick={() => setListBy('desc')} size="18px" />
+                            </Flex>
+                          </Tooltip>
+                        </Flex>
+                      </Th>
+                      <Th color="white">Marcar como Pago</Th>
+                      <Th color="white">Ações</Th>
                     </Tr>
-                  ))}
-                </Tbody>
-              </Table>
+                  </Thead>
+                  <Tbody>
+                    {clients.map(client => (
+                      <Tr key={client.id}>
+                        <Td>{client.name}</Td>
+                        <Td>
+                          <chakra.a href={`${client.contact.includes('http') ? client.contact : 'https://' + client.contact}`}>{client.contact}</chakra.a>
+                        </Td>
+                        <Td><chakra.a href={`https://${client.domain}`} target="_blank">{client.domain}</chakra.a></Td>
+                        <Td>{client.state == 'Suspend' ? <Button onClick={() => handleChangeState(client.domain, 'Activate')} colorScheme="green">Reativar</Button> : <Button onClick={() => handleChangeState(client.domain, 'Suspend')} colorScheme="red">Desativar</Button>}</Td>
+                        <Td minW="120px">R$ {client.price}</Td>
+                        <Td minW="232px" fontWeight={moment().unix() > moment(client.expire_at).unix() ? 'bold' : ''} color={moment().unix() > moment(client.expire_at).unix() ? 'red.400' : ''}>{moment(client.expire_at).format('DD-MM-yyyy')}{moment().unix() > moment(client.expire_at).unix() ? ' - (Vencido)' : ''}</Td>
+                        <Td>
+                          <Button mr="0.1rem" colorScheme="green" leftIcon={<IoCashOutline />} onClick={() => setAsPaid(client.id)}>Pago</Button>
+                        </Td>
+                        <Td minW="260px">
+                          <Button mr="0.1rem" colorScheme="blue" leftIcon={<AiOutlineEdit />} onClick={() => handleEditClient(client.id)}>Editar</Button>
+                          <Button ml="0.1rem" colorScheme="red" leftIcon={<AiOutlineDelete />} onClick={() => handleDeleteClient(client.id, client.domain)}>Excluir</Button>
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </Flex>
             </Flex>
 
           </Flex>
