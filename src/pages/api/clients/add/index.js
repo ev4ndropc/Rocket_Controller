@@ -3,7 +3,7 @@ import database from '../../../../database';
 
 
 export default async function addClient(request, response) {
-    const { name, contact, domain, expire_at } = request.body;
+    const { name, contact, domain, price, expire_at } = request.body;
 
     const session = await getSession({ req: request });
     if (!session)
